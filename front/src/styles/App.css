@@ -1,0 +1,142 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+#root {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+body::-webkit-scrollbar {
+    width: 0px;
+}
+
+.App {
+    width: 800px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.post {
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+    border: 2px solid teal;
+    margin-top: 15px;
+    gap: 10px;
+    width: 100%;
+}
+
+.post__description {
+    border: 1px solid black;
+    width: 100%;
+    padding: 3px;
+    padding-left: 5px;
+    padding-right: 5px;
+    line-height: 1.5;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-align: justify;
+}
+
+textarea {
+    width: 100%;
+    padding: 5px 15px;
+    margin: 5px 0;
+    border: 1px solid teal;
+    height: 100px;
+}
+
+.post__content {
+    display: flex;
+    gap: 10px;
+    flex-direction: column;
+}
+
+.post__footer {
+    display: flex;
+    justify-content: space-between;
+}
+
+.post__image {
+    width: 100%;
+    height: 100%;
+}
+
+.post__description__module {
+    border: 1px solid black;
+    width: 100%;
+    padding: 3px;
+    padding-left: 5px;
+    padding-right: 5px;
+    line-height: 1.5;
+    overflow: hidden;
+    text-align: justify;
+}
+
+.like {
+    border: none;
+    height: 18px;
+    cursor: pointer;
+}
+
+.likeI {
+    width: 20px;
+    height: 20px;
+}
+
+a {
+    color: teal;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.header {
+    height: 50px;
+    width: 800px;
+    display: flex;
+    align-items: center;
+    padding: 0 15px;
+    margin-top: 30px;
+    margin-bottom: 10px;
+    justify-content: space-between;
+}
+
+.links {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+.post__comments {
+    border: 1px solid black;
+    width: 100%;
+    padding: 3px;
+    padding-left: 5px;
+    padding-right: 5px;
+    line-height: 1.5;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    overflow: hidden;
+    text-align: justify;
+    min-height: 100px;
+}
+
+form {
+    > button {
+        width: 150px;
+    }
+}

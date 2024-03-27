@@ -18,7 +18,7 @@
 
 1. Клонируйте репозиторий на ваш локальный компьютер:
 ```shell
-git clone https://your-repository-link.com
+git clone https://github.com/Remsely/stArt.git
 ```
 
 2. Перейдите в директорию backend и выполните команду для сборки бэкенда с помощью Gradle:

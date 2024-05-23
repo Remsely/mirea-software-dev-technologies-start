@@ -26,7 +26,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public LoginResponse login(LoginRequest request) {
-        final String email = request.getEmail();
+        final String email = request.getUsername();
         if (!userService.userExistByEmail(email)) {
             log.info("Login failed. No user found with email {}!", email);
             return LoginResponse.builder()
@@ -39,7 +39,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public LoginResponse register(LoginRequest request) {
         userService.addUser(User.builder()
-                .email(request.getEmail())
+                .username(request.getUsername())
                 .password(request.getPassword())
                 .build());
         return getToken(request);
@@ -47,7 +47,7 @@ public class AuthServiceImpl implements AuthService {
 
     private LoginResponse getToken(LoginRequest request) {
         var authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
+                new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
         );
         SecurityContextHolder.getContext().setAuthentication(authentication);
         UserPrincipal principal = (UserPrincipal) authentication.getPrincipal();
@@ -56,9 +56,9 @@ public class AuthServiceImpl implements AuthService {
                 .map(GrantedAuthority::getAuthority)
                 .toList();
 
-        var token = jwtIssuer.issue(principal.getUserId(), principal.getEmail(), roles);
+        var token = jwtIssuer.issue(principal.getUserId(), principal.getUsername(), roles);
 
-        log.info("Login successful. User email : {}.", request.getEmail());
+        log.info("Login successful. User email : {}.", request.getUsername());
         return LoginResponse.builder()
                 .token(token)
                 .build();

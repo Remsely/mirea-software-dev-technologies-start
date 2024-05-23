@@ -19,7 +19,7 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = true)
     @Override
     public User findUserByEmail(String email) {
-        User user = userRepository.findByEmailIgnoreCase(email)
+        User user = userRepository.findByUsernameIgnoreCase(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         log.info("User found by email successful. User : {} ", user);
         return user;
@@ -38,7 +38,7 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = true)
     @Override
     public boolean userExistByEmail(String email) {
-        boolean exists = userRepository.existsByEmailIgnoreCase(email);
+        boolean exists = userRepository.existsByUsernameIgnoreCase(email);
         log.info("User existence by email {} has been checked. existence : {} ", email, exists);
         return exists;
     }

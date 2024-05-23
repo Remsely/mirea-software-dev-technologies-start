@@ -8,5 +8,5 @@ import lombok.Data;
 public class CommentDto {
     private long id;
     private String content;
-    private String authorEmail;
+    private String author;
 }

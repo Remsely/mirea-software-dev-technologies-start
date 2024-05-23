@@ -13,7 +13,7 @@ import java.util.Collection;
 public class UserPrincipal implements UserDetails {
     private final Long userId;
 
-    private final String email;
+    private final String username;
 
     @JsonIgnore
     private final String password;
@@ -32,7 +32,7 @@ public class UserPrincipal implements UserDetails {
 
     @Override
     public String getUsername() {
-        return email;
+        return username;
     }
 
     @Override

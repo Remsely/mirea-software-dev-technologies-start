@@ -23,7 +23,7 @@ public class PostMapper {
                 .title(post.getTitle())
                 .content(post.getContent())
                 .image(post.getImage())
-                .authorEmail(post.getUser().getEmail())
+                .author(post.getUser().getUsername())
                 .likeCount(likeCount)
                 .build();
     }
@@ -34,7 +34,7 @@ public class PostMapper {
                 .title(post.getTitle())
                 .content(post.getContent())
                 .image(post.getImage())
-                .authorEmail(post.getUser().getEmail())
+                .author(post.getUser().getUsername())
                 .likeCount(0)
                 .build();
     }
@@ -42,7 +42,7 @@ public class PostMapper {
     public PostWithCommentsDto toDto(Post post, List<Comment> comments, int likeCount) {
         return PostWithCommentsDto.builder()
                 .id(post.getId())
-                .authorEmail(post.getUser().getEmail())
+                .author(post.getUser().getUsername())
                 .title(post.getTitle())
                 .content(post.getContent())
                 .image(post.getImage())

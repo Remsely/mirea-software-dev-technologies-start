@@ -9,7 +9,7 @@ import java.util.List;
 @Builder
 public class PostWithCommentsDto {
     private Long id;
-    private String authorEmail;
+    private String author;
     private String title;
     private String content;
     private String image;

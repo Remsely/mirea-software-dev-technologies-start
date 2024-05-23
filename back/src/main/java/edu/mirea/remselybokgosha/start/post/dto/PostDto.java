@@ -7,7 +7,7 @@ import lombok.Data;
 @Builder
 public class PostDto {
     private Long id;
-    private String authorEmail;
+    private String author;
     private String title;
     private String content;
     private String image;

@@ -21,3 +21,8 @@ spring:
   sql:
     init:
       mode: always
+
+cloud:
+  firebase:
+    storage-bucket: start-8fcf1.appspot.com
+    service-access-key-path: src/main/resources/firebase/start-8fcf1-firebase-adminsdk-cxqyu-cb4a3970d1.json

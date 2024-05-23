@@ -1,0 +1,23 @@
+security:
+  jwt:
+    secret-sey: verysecretkeydonttellanybodyimserious
+
+spring:
+  application:
+    name: stArt
+
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/start
+    username: start
+    password: start348233083
+
+  jpa:
+    open-in-view: false
+    show-sql: false
+    hibernate:
+      ddl-auto: update
+
+  sql:
+    init:
+      mode: always

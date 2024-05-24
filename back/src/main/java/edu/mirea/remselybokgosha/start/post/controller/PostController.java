@@ -1,12 +1,14 @@
 package edu.mirea.remselybokgosha.start.post.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.mirea.remselybokgosha.start.post.dto.CommentCreationDto;
+import edu.mirea.remselybokgosha.start.post.dto.CommentDto;
 import edu.mirea.remselybokgosha.start.post.dto.PostDto;
 import edu.mirea.remselybokgosha.start.post.dto.PostWithCommentsDto;
 import edu.mirea.remselybokgosha.start.post.entity.Post;
-import edu.mirea.remselybokgosha.start.post.mapper.PostMapper;
 import edu.mirea.remselybokgosha.start.post.service.PostService;
 import edu.mirea.remselybokgosha.start.security.auth.principal.UserPrincipal;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -21,7 +23,6 @@ import java.util.List;
 public class PostController {
     private final PostService postService;
     private final ObjectMapper objectMapper;
-    private final PostMapper postMapper;
 
     @SneakyThrows
     @PostMapping
@@ -30,7 +31,7 @@ public class PostController {
                               @RequestParam("json") String json) {
         long userId = userPrincipal.getUserId();
         Post post = objectMapper.readValue(json, Post.class);
-        return postMapper.toDto(postService.savePost(post, image, userId));
+        return postService.savePost(post, image, userId);
     }
 
     @GetMapping("/{id}")
@@ -58,5 +59,13 @@ public class PostController {
         long userId = userPrincipal.getUserId();
         postService.removePostLike(id, userId);
         return postService.getPost(id, userId);
+    }
+
+    @PostMapping("/{id}/comments")
+    public CommentDto createComment(@AuthenticationPrincipal UserPrincipal userPrincipal,
+                                    @Valid @RequestBody CommentCreationDto commentDto,
+                                    @PathVariable Long id) {
+        long userId = userPrincipal.getUserId();
+        return postService.saveComment(commentDto, id, userId);
     }
 }

@@ -1,12 +1,17 @@
 package edu.mirea.remselybokgosha.start.post.service;
 
 import edu.mirea.remselybokgosha.start.cloud.firebase.FirebaseStorageService;
+import edu.mirea.remselybokgosha.start.post.dto.CommentCreationDto;
+import edu.mirea.remselybokgosha.start.post.dto.CommentDto;
 import edu.mirea.remselybokgosha.start.post.dto.PostDto;
 import edu.mirea.remselybokgosha.start.post.dto.PostWithCommentsDto;
+import edu.mirea.remselybokgosha.start.post.entity.Comment;
 import edu.mirea.remselybokgosha.start.post.entity.Post;
 import edu.mirea.remselybokgosha.start.post.entity.PostLike;
 import edu.mirea.remselybokgosha.start.post.entity.UserAndPostPrimaryKey;
+import edu.mirea.remselybokgosha.start.post.mapper.CommentMapper;
 import edu.mirea.remselybokgosha.start.post.mapper.PostMapper;
+import edu.mirea.remselybokgosha.start.post.repository.CommentRepository;
 import edu.mirea.remselybokgosha.start.post.repository.LikeRepository;
 import edu.mirea.remselybokgosha.start.post.repository.PostRepository;
 import edu.mirea.remselybokgosha.start.user.entity.User;
@@ -25,20 +30,22 @@ public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final LikeRepository likeRepository;
+    private final CommentRepository commentRepository;
     private final FirebaseStorageService storageService;
     private final PostMapper postMapper;
+    private final CommentMapper commentMapper;
 
-    @SneakyThrows
     @Transactional
+    @SneakyThrows
     @Override
-    public Post savePost(Post post, MultipartFile image, long userId) {
+    public PostDto savePost(Post post, MultipartFile image, long userId) {
         User user = findUserById(userId);
         String imageUrl = storageService.uploadPostImage(image);
 
         post.setUser(user);
         post.setImage(imageUrl);
 
-        return postRepository.save(post);
+        return postMapper.toDto(postRepository.save(post));
     }
 
     @Transactional(readOnly = true)
@@ -84,6 +91,18 @@ public class PostServiceImpl implements PostService {
                 .user(user)
                 .build()
         );
+    }
+
+    @Override
+    public CommentDto saveComment(CommentCreationDto commentDto, long postId, long userId) {
+        User user = findUserById(userId);
+        Post post = findPostById(postId);
+
+        Comment comment = commentMapper.toEntity(commentDto);
+        comment.setUser(user);
+        comment.setPost(post);
+
+        return commentMapper.toDto(commentRepository.save(comment));
     }
 
     private User findUserById(long userId) {

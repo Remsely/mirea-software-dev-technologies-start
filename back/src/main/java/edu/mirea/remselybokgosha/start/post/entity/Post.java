@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @Table(name = "posts")
 @Data
@@ -30,4 +32,10 @@ public class Post {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
     private User user;
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<PostLike> likes;
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Comment> comments;
 }

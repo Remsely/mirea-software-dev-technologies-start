@@ -4,7 +4,10 @@ import edu.mirea.remselybokgosha.start.cloud.firebase.FirebaseStorageService;
 import edu.mirea.remselybokgosha.start.post.dto.PostDto;
 import edu.mirea.remselybokgosha.start.post.dto.PostWithCommentsDto;
 import edu.mirea.remselybokgosha.start.post.entity.Post;
+import edu.mirea.remselybokgosha.start.post.entity.PostLike;
+import edu.mirea.remselybokgosha.start.post.entity.UserAndPostPrimaryKey;
 import edu.mirea.remselybokgosha.start.post.mapper.PostMapper;
+import edu.mirea.remselybokgosha.start.post.repository.LikeRepository;
 import edu.mirea.remselybokgosha.start.post.repository.PostRepository;
 import edu.mirea.remselybokgosha.start.user.entity.User;
 import edu.mirea.remselybokgosha.start.user.repository.UserRepository;
@@ -21,6 +24,7 @@ import java.util.List;
 public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+    private final LikeRepository likeRepository;
     private final FirebaseStorageService storageService;
     private final PostMapper postMapper;
 
@@ -51,6 +55,37 @@ public class PostServiceImpl implements PostService {
         return postMapper.toDtoList(postRepository.findAll());
     }
 
+    @Transactional
+    @Override
+    public void savePostLike(long postId, long userId) {
+        User user = findUserById(userId);
+        Post post = findPostById(postId);
+
+        checkLikeNotExist(post, user);
+
+
+        likeRepository.save(PostLike.builder()
+                .post(post)
+                .user(user)
+                .build()
+        );
+    }
+
+    @Transactional
+    @Override
+    public void removePostLike(long postId, long userId) {
+        User user = findUserById(userId);
+        Post post = findPostById(postId);
+
+        checkLikeExist(post, user);
+
+        likeRepository.deleteById(UserAndPostPrimaryKey.builder()
+                .post(post)
+                .user(user)
+                .build()
+        );
+    }
+
     private User findUserById(long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User Not Found"));
@@ -65,9 +100,30 @@ public class PostServiceImpl implements PostService {
         return userRepository.existsById(userId);
     }
 
+    private boolean isLikeExist(Post post, User user) {
+        return likeRepository.existsById(
+                UserAndPostPrimaryKey.builder()
+                        .post(post)
+                        .user(user)
+                        .build()
+        );
+    }
+
     private void checkUserExist(long userId) {
         if (!isUserExist(userId)) {
             throw new RuntimeException("User Not Found");
+        }
+    }
+
+    private void checkLikeExist(Post post, User user) {
+        if (!isLikeExist(post, user)) {
+            throw new RuntimeException("Like Not Found");
+        }
+    }
+
+    private void checkLikeNotExist(Post post, User user) {
+        if (isLikeExist(post, user)) {
+            throw new RuntimeException("Like Already Exists");
         }
     }
 }

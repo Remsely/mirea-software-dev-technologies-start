@@ -13,4 +13,8 @@ public interface PostService {
     PostWithCommentsDto getPost(long postId, long userId);
 
     List<PostDto> getAllPosts(long userId);
+
+    void savePostLike(long postId, long userId);
+
+    void removePostLike(long postId, long userId);
 }

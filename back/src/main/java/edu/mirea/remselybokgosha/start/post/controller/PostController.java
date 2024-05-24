@@ -45,4 +45,18 @@ public class PostController {
         long userId = userPrincipal.getUserId();
         return postService.getAllPosts(userId);
     }
+
+    @PutMapping("/{id}/likes")
+    public PostWithCommentsDto putLike(@AuthenticationPrincipal UserPrincipal userPrincipal, @PathVariable Long id) {
+        long userId = userPrincipal.getUserId();
+        postService.savePostLike(id, userId);
+        return postService.getPost(id, userId);
+    }
+
+    @DeleteMapping("/{id}/likes")
+    public PostWithCommentsDto deleteLike(@AuthenticationPrincipal UserPrincipal userPrincipal, @PathVariable Long id) {
+        long userId = userPrincipal.getUserId();
+        postService.removePostLike(id, userId);
+        return postService.getPost(id, userId);
+    }
 }

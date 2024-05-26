@@ -9,12 +9,6 @@ const PostItem = (props) => {
     const [modal, setModal] = useState(false);
     const [like, setLike] = useState("white");
 
-    const removePost = () => {
-        localStorage.removeItem(`comments_${props.post.id}`);
-        localStorage.removeItem(`like_${props.post.id}`);
-        props.remove(props.post);
-    };
-
     return (
         <div className="post">
             <div className="post__content">
@@ -69,8 +63,6 @@ const PostItem = (props) => {
                         </div>
                     </div>
                 </MyModal>
-
-                <MyButton onClick={removePost}>Удалить</MyButton>
             </div>
         </div>
     );

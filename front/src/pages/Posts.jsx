@@ -1,12 +1,12 @@
-import React, { useState, useMemo } from "react";
-
+import React, { useState, useMemo, useEffect } from "react";
 import "../styles/App.css";
-
 import PostList from "../components/PostList";
 import PostForm from "../components/PostForm";
 import PostFilter from "../components/PostFilter";
 import MyModal from "../UI/modal/MyModal";
 import MyButton from "../UI/button/MyButton";
+import PostService from "../services/PostService";
+import { useFetching } from "../hooks/useFetching";
 
 function Posts() {
     const [posts, setPosts] = useState([
@@ -33,7 +33,6 @@ function Posts() {
             body: "Дизайн — органичное новое соединение существующих материальных объектов и (или) жизненных ситуаций на основе метода компоновки при необходимом использовании данных науки с целью придания результатам этого соединения эстетических качеств и оптимизации их взаимодействия с человеком и обществом. Это определяет наличие присущих дизайну социальных последствий, проявляющихся в содействии общественному прогрессу и формированию личности. Термином «дизайн» может определяться собственно замысел (проект), процесс его реализации и полученный результат.",
         },
     ]);
-
     const [filter, setFilter] = useState({ sort: "", query: "" });
     const [modal, setModal] = useState(false);
 
@@ -52,14 +51,25 @@ function Posts() {
         );
     }, [filter.query, sortedPosts]);
 
-    const createPost = (newPost) => {
-        setPosts([...posts, newPost]);
+    const createPost = async (post) => {
+        const createdPost = await PostService.addPost(
+            post.img,
+            post.title,
+            post.body
+        );
+        setPosts([...posts, createdPost]);
         setModal(false);
     };
 
-    const removePost = (post) => {
-        setPosts(posts.filter((p) => p.id !== post.id));
-    };
+    const [fetchPosts, isLoading, error] = useFetching(async () => {
+        const gottenPosts = await PostService.getPosts();
+
+        setPosts(gottenPosts);
+    });
+
+    useEffect(() => {
+        fetchPosts();
+    }, []);
 
     return (
         <div className="App">
@@ -79,11 +89,7 @@ function Posts() {
 
             <PostFilter filter={filter} setFilter={setFilter} />
 
-            <PostList
-                remove={removePost}
-                posts={sortedAndSearchedPosts}
-                title="Посты"
-            />
+            <PostList posts={sortedAndSearchedPosts} title="Посты" />
         </div>
     );
 }

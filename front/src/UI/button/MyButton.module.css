@@ -5,4 +5,7 @@
     background: transparent;
     border: 1px solid teal;
     cursor: pointer;
+    border-radius: 20px;
+    box-shadow: 0 5px 8px 0 rgba(2, 85, 6, 0.2);
+    width: auto;
 }

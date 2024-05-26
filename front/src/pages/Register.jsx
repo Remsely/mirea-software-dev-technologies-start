@@ -5,44 +5,49 @@ import { AuthContext } from "../context";
 import AuthService from "../services/AuthService";
 import { useNavigate } from "react-router-dom";
 
-const Login = () => {
+const Register = () => {
     const [userEmail, setUserEmail] = useState("");
     const [userPassword, setUserPassword] = useState("");
+    const [userPasswordConfirm, setUserPasswordConfirm] = useState("");
     const { setIsAuth } = useContext(AuthContext);
     const router = useNavigate();
 
-    const login = async (e) => {
+    const register = async (e) => {
         e.preventDefault();
-        try {
-            const response = await AuthService.login(userEmail, userPassword);
+        if (userPassword !== userPasswordConfirm) {
+            alert("Введенные пароли не совпадают!");
 
-            console.log(response);
-            console.log(response.status);
+            setUserPasswordConfirm("");
+
+            return;
+        }
+        try {
+            const response = await AuthService.register(
+                userEmail,
+                userPassword
+            );
 
             if (response.status === 200) {
-                if (response.data.accessToken === null) {
-                    setIsAuth(false);
-                    alert("Авторизация провалена!");
-                } else {
-                    setIsAuth(true);
-                }
+                setIsAuth(true);
 
                 router(`/posts`);
             } else {
-                alert("Авторизация провалена!");
+                setIsAuth(false);
+
+                alert("Такой пользователь уже зарегистрирован!");
             }
         } catch (error) {
-            alert("Авторизация провалена!");
-
             console.error(error);
+
+            alert("Ошибка регистрации!");
         }
     };
 
     return (
         <div style={{ marginBottom: 20 }}>
-            <h1 style={{ marginBottom: 10 }}>Авторизация</h1>
+            <h1 style={{ marginBottom: 10 }}>Регистрация</h1>
 
-            <form onSubmit={login}>
+            <form onSubmit={register}>
                 <MyInput
                     type="email"
                     placeholder={"email@example.com"}
@@ -59,14 +64,18 @@ const Login = () => {
                     style={{ marginBottom: 10 }}
                 />
 
-                <MyButton type={"submit"}>Войти</MyButton>
+                <MyInput
+                    type="password"
+                    placeholder={"Подтверждение пароля"}
+                    value={userPasswordConfirm}
+                    onChange={(e) => setUserPasswordConfirm(e.target.value)}
+                    style={{ marginBottom: 10 }}
+                />
 
-                <MyButton onClick={() => router(`/auth/register`)}>
-                    Перейти к регистрации
-                </MyButton>
+                <MyButton type={"submit"}>Зарегистрироваться</MyButton>
             </form>
         </div>
     );
 };
 
-export default Login;
+export default Register;

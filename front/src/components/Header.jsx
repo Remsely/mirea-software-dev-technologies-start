@@ -2,14 +2,15 @@ import React, { useContext } from "react";
 import MyButton from "../UI/button/MyButton";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../context";
+import AuthService from "../services/AuthService";
 
 const Header = () => {
-    const { isAuth, setIsAuth } = useContext(AuthContext);
+    const { setIsAuth } = useContext(AuthContext);
 
     const logout = () => {
+        AuthService.logout();
         setIsAuth(false);
-        localStorage.removeItem('auth');
-    }
+    };
 
     return (
         <div className="header">

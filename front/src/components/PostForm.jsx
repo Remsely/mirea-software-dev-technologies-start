@@ -1,23 +1,21 @@
 import React, { useState } from "react";
-
 import MyButton from "../UI/button/MyButton";
 import MyInput from "../UI/input/MyInput";
 import ImageLoader from "./ImageLoader";
+import PostService from "../services/PostService";
 
-const PostForm = ({ create }) => {
+const PostForm = () => {
     const [post, setPost] = useState({ img: null, title: "", body: "" });
 
-    const addNewPost = (e) => {
+    const addNewPost = async (e) => {
         e.preventDefault();
 
-        const newPost = {
-            ...post,
-            id: Date.now(),
-        };
-
-        create(newPost);
-
-        setPost({ img: null, title: "", body: "" });
+        try {
+            await PostService.addPost(post.img, post.title, post.body);
+            setPost({ img: null, title: "", body: "" });
+        } catch (error) {
+            console.error("Error creating post:", error);
+        }
     };
 
     const handleImageChange = (image) => {

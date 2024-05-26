@@ -23,7 +23,8 @@ body::-webkit-scrollbar {
 form {
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 10px;
+    align-items: center;
 }
 
 .post {
@@ -34,6 +35,8 @@ form {
     margin-top: 15px;
     gap: 10px;
     width: 100%;
+    border-radius: 20px;
+    box-shadow: 0 5px 5px 0 rgba(30, 30, 30, 0.4)
 }
 
 .post__description {

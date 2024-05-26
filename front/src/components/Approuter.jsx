@@ -1,47 +1,34 @@
 import React, { useContext } from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
+import { privateRoutes, publicRoutes } from "../router/router";
 import { AuthContext } from "../context";
 
-import { publicRoutes, privateRoutes } from "../router/router";
-
-const Approuter = () => {
+const AppRouter = () => {
     const { isAuth } = useContext(AuthContext);
-
-    return (
+    
+    return isAuth ? (
         <Routes>
-            {isAuth ? (
-                <>
-                    <Route
-                        path="/*"
-                        element={<Navigate replace to="/posts" />}
-                    />
-                    {privateRoutes.map((route, index) => (
-                        <Route
-                            key={index}
-                            element={<route.component />}
-                            path={route.path}
-                            exact={route.exact}
-                        />
-                    ))}
-                </>
-            ) : (
-                <>
-                    <Route
-                        path="/*"
-                        element={<Navigate replace to="/login" />}
-                    />
-                    {publicRoutes.map((route, index) => (
-                        <Route
-                            key={index}
-                            element={<route.component />}
-                            path={route.path}
-                            exact={route.exact}
-                        />
-                    ))}
-                </>
-            )}
+            {privateRoutes.map((route) => (
+                <Route
+                    path={route.path}
+                    element={<route.element />}
+                    key={route.path}
+                />
+            ))}
+            <Route path="*" element={<Navigate to="/posts" replace />} />
+        </Routes>
+    ) : (
+        <Routes>
+            {publicRoutes.map((route) => (
+                <Route
+                    path={route.path}
+                    element={<route.element />}
+                    key={route.path}
+                />
+            ))}
+            <Route path="*" element={<Navigate to="/auth/login" replace />} />
         </Routes>
     );
 };
 
-export default Approuter;
+export default AppRouter;

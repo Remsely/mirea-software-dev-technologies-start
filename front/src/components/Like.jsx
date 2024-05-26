@@ -1,17 +1,21 @@
 import React, { useEffect, useState } from "react";
+import LikeService from "../services/LikeService";
 
 const Like = ({ like, setLike, postId }) => {
     useEffect(() => {
-        if (localStorage.getItem(`like_${postId}`) === "red") {
+        const storedLike = localStorage.getItem(`like_${postId}`);
+        if (storedLike === "red") {
             setLike("red");
         }
-    }, [postId]);
+    }, [postId, setLike]);
 
-    const isLiked = () => {
+    const toggleLike = async () => {
         if (like === "white") {
+            await LikeService.addLike(postId);
             setLike("red");
             localStorage.setItem(`like_${postId}`, "red");
         } else {
+            await LikeService.removeLike(postId);
             setLike("white");
             localStorage.setItem(`like_${postId}`, "white");
         }
@@ -22,7 +26,7 @@ const Like = ({ like, setLike, postId }) => {
     };
 
     return (
-        <button className="like" onClick={isLiked} style={buttonStyle}>
+        <button className="like" onClick={toggleLike} style={buttonStyle}>
             <img className="likeI" src="../images/heart1.png" alt="Like" />
         </button>
     );

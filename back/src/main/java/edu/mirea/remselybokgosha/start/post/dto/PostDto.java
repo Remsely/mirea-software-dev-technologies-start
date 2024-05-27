@@ -12,4 +12,5 @@ public class PostDto {
     private String content;
     private String image;
     private Integer likeCount;
+    private Boolean liked;
 }

@@ -15,4 +15,5 @@ public class PostWithCommentsDto {
     private String image;
     private Integer likeCount;
     private List<CommentDto> comments;
+    private Boolean liked;
 }

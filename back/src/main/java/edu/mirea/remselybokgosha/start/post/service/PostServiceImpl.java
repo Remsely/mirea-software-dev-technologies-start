@@ -23,6 +23,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -45,21 +47,31 @@ public class PostServiceImpl implements PostService {
         post.setUser(user);
         post.setImage(imageUrl);
 
-        return postMapper.toDto(postRepository.save(post));
+        return postMapper.toDto(postRepository.save(post), false);
     }
 
     @Transactional(readOnly = true)
     @Override
     public PostWithCommentsDto getPost(long postId, long userId) {
-        checkUserExist(userId);
-        return postMapper.toDtoWithComments(findPostById(postId));
+        User user = findUserById(userId);
+        Post post = findPostById(postId);
+        return postMapper.toDtoWithComments(post, isLikeExist(post, user));
     }
 
     @Transactional(readOnly = true)
     @Override
     public List<PostDto> getAllPosts(long userId) {
-        checkUserExist(userId);
-        return postMapper.toDtoList(postRepository.findAll());
+        User user = findUserById(userId);
+        List<Post> posts = postRepository.findAll();
+
+        List<PostLike> likes = likeRepository.findByUser(user);
+        Set<Long> likedPostIds = getLikedPostsIds(likes);
+
+        return posts.stream()
+                .map(post -> {
+                    boolean isLiked = likedPostIds.contains(post.getId());
+                    return postMapper.toDto(post, isLiked);
+                }).toList();
     }
 
     @Transactional
@@ -69,7 +81,6 @@ public class PostServiceImpl implements PostService {
         Post post = findPostById(postId);
 
         checkLikeNotExist(post, user);
-
 
         likeRepository.save(PostLike.builder()
                 .post(post)
@@ -115,10 +126,6 @@ public class PostServiceImpl implements PostService {
                 .orElseThrow(() -> new RuntimeException("Post Not Found"));
     }
 
-    private boolean isUserExist(long userId) {
-        return userRepository.existsById(userId);
-    }
-
     private boolean isLikeExist(Post post, User user) {
         return likeRepository.existsById(
                 UserAndPostPrimaryKey.builder()
@@ -126,12 +133,6 @@ public class PostServiceImpl implements PostService {
                         .user(user)
                         .build()
         );
-    }
-
-    private void checkUserExist(long userId) {
-        if (!isUserExist(userId)) {
-            throw new RuntimeException("User Not Found");
-        }
     }
 
     private void checkLikeExist(Post post, User user) {
@@ -144,5 +145,11 @@ public class PostServiceImpl implements PostService {
         if (isLikeExist(post, user)) {
             throw new RuntimeException("Like Already Exists");
         }
+    }
+
+    private Set<Long> getLikedPostsIds(List<PostLike> likedPosts) {
+        return likedPosts.stream()
+                .map(like -> like.getPost().getId())
+                .collect(Collectors.toSet());
     }
 }

@@ -16,7 +16,7 @@ import java.util.List;
 public class PostMapper {
     private final CommentMapper commentMapper;
 
-    public PostDto toDto(Post post) {
+    public PostDto toDto(Post post, boolean liked) {
         List<PostLike> likes = post.getLikes();
         return PostDto.builder()
                 .id(post.getId())
@@ -24,11 +24,12 @@ public class PostMapper {
                 .content(post.getContent())
                 .image(post.getImage())
                 .author(post.getUser().getUsername())
+                .liked(liked)
                 .likeCount(likes == null ? 0 : likes.size())
                 .build();
     }
 
-    public PostWithCommentsDto toDtoWithComments(Post post) {
+    public PostWithCommentsDto toDtoWithComments(Post post, boolean liked) {
         List<PostLike> likes = post.getLikes();
         return PostWithCommentsDto.builder()
                 .id(post.getId())
@@ -37,13 +38,8 @@ public class PostMapper {
                 .content(post.getContent())
                 .image(post.getImage())
                 .likeCount(likes == null ? 0 : likes.size())
+                .liked(liked)
                 .comments(commentMapper.toDtoList(post.getComments()))
                 .build();
-    }
-
-    public List<PostDto> toDtoList(List<Post> posts) {
-        return posts.stream()
-                .map(this::toDto)
-                .toList();
     }
 }

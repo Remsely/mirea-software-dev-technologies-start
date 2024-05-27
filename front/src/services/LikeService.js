@@ -2,43 +2,36 @@ import AuthService from "./AuthService";
 import axios from "axios";
 import PostService from "./PostService";
 
-const addLike = (postId) => {
-    let config = {
-        method: "put",
-        maxBody: Infinity,
-        url: `/posts/${postId}/likes`,
+const addLike = async (postId, userId) => {
+    const response = await axios.put(`/posts/${postId}/likes`, null, {
         headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${AuthService.getToken()}`,
         },
         data: {
-            postId,
+            userId,
         },
-    };
-
-    return axios.request(config).then((r) => {
-        if (r.status === 200) {
-            return r.data;
-        } else {
-            return null;
-        }
     });
+
+    if (response.status === 200) {
+        return await PostService.getPostById(postId);
+    } else {
+        return null;
+    }
 };
 
-const removeLike = async (postId) => {
-    let config = {
-        method: "delete",
-        maxBody: Infinity,
-        url: `/posts/${postId}/likes`,
+const removeLike = async (postId, userId) => {
+    await axios.delete(`/posts/${postId}/likes`, {
         headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${AuthService.getToken()}`,
         },
-    };
+        data: {
+            userId,
+        },
+    });
 
-    await axios.request(config);
-
-    return PostService.getPostByID(postId);
+    return await PostService.getPostById(postId);
 };
 
 const LikeService = {

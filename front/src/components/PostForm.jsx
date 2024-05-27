@@ -1,36 +1,41 @@
 import React, { useState } from "react";
 import MyButton from "../UI/button/MyButton";
 import MyInput from "../UI/input/MyInput";
-import ImageLoader from "./ImageLoader";
 import PostService from "../services/PostService";
 
-const PostForm = () => {
-    const [post, setPost] = useState({ img: null, title: "", body: "" });
+const PostForm = ({ create }) => {
+    const [post, setPost] = useState({ image: null, title: "", content: "" });
 
     const addNewPost = async (e) => {
         e.preventDefault();
 
-        try {
-            await PostService.addPost(post.img, post.title, post.body);
-            setPost({ img: null, title: "", body: "" });
-        } catch (error) {
-            console.error("Error creating post:", error);
-        }
-    };
-
-    const handleImageChange = (image) => {
-        const reader = new FileReader();
-
-        reader.onloadend = () => {
-            setPost({ ...post, img: reader.result });
+        const formData = new FormData();
+        const jsonBody = {
+            title: post.title,
+            content: post.content,
         };
+        formData.append("json", JSON.stringify(jsonBody));
 
-        reader.readAsDataURL(image);
+        if (post.image) {
+            formData.append("image", post.image);
+        }
+
+        const newPost = await PostService.addPost(formData);
+
+        const newPostI = { ...newPost };
+        create(newPostI);
+
+        setPost({ image: null, title: "", content: "" });
+
+        return newPostI;
     };
 
     return (
         <form>
-            <ImageLoader setImage={handleImageChange} />
+            <input
+                type="file"
+                onChange={(e) => setPost({ ...post, image: e.target.files[0] })}
+            />
 
             <MyInput
                 value={post.title}
@@ -40,8 +45,8 @@ const PostForm = () => {
             />
 
             <textarea
-                value={post.body}
-                onChange={(e) => setPost({ ...post, body: e.target.value })}
+                value={post.content}
+                onChange={(e) => setPost({ ...post, content: e.target.value })}
                 type="text"
                 placeholder="Описание поста"
             />

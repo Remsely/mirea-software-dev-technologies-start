@@ -1,23 +1,27 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import LikeService from "../services/LikeService";
+import PostService from "../services/PostService";
 
-const Like = ({ like, setLike, postId }) => {
-    useEffect(() => {
-        const storedLike = localStorage.getItem(`like_${postId}`);
-        if (storedLike === "red") {
-            setLike("red");
-        }
-    }, [postId, setLike]);
+const Like = ({ postId, userId }) => {
+    const [like, setLike] = useState();
+
+    const fetchPost = async () => {
+        const post = await PostService.getPostById(postId);
+
+        setLike(post.liked ? "red" : "white");
+    };
+
+    fetchPost();
 
     const toggleLike = async () => {
         if (like === "white") {
-            await LikeService.addLike(postId);
+            await LikeService.addLike(postId, userId);
+
             setLike("red");
-            localStorage.setItem(`like_${postId}`, "red");
         } else {
-            await LikeService.removeLike(postId);
+            await LikeService.removeLike(postId, userId);
+
             setLike("white");
-            localStorage.setItem(`like_${postId}`, "white");
         }
     };
 

@@ -21,7 +21,7 @@ const getPosts = () => {
     });
 };
 
-const getPostByID = (id) => {
+const getPostById = (id) => {
     let config = {
         method: "get",
         maxBody: Infinity,
@@ -41,34 +41,21 @@ const getPostByID = (id) => {
     });
 };
 
-const addPost = (imageUrl, title, content) => {
-    let config = {
-        method: "post",
-        maxBody: Infinity,
-        url: "/posts",
-        headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${AuthService.getToken()}`,
-        },
-        data: {
-            imageUrl,
-            title,
-            content,
-        },
-    };
-
-    return axios.request(config).then((r) => {
-        if (r.status === 200) {
+const addPost = (formData) => {
+    axios
+        .post("/posts", formData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        })
+        .then((r) => {
             return r.data;
-        } else {
-            return null;
-        }
-    });
+        });
 };
 
 const PostService = {
     getPosts,
-    getPostByID,
+    getPostById,
     addPost,
 };
 

@@ -5,10 +5,11 @@ import { AuthContext } from "../context";
 import AuthService from "../services/AuthService";
 
 const Header = () => {
-    const { setIsAuth } = useContext(AuthContext);
+    const { isAuth, setIsAuth } = useContext(AuthContext);
 
     const logout = () => {
         AuthService.logout();
+
         setIsAuth(false);
     };
 
@@ -18,7 +19,8 @@ const Header = () => {
 
             <div className="links">
                 <Link to="./posts">Посты</Link>
-                <MyButton onClick={logout}>Выйти</MyButton>
+
+                {isAuth && <MyButton onClick={logout}>Выйти</MyButton>}
             </div>
         </div>
     );

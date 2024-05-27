@@ -1,58 +1,34 @@
-import React, { useState, useEffect } from "react";
-
+import React, { useState } from "react";
 import MyInput from "../UI/input/MyInput";
 import MyButton from "../UI/button/MyButton";
 
-const Comments = ({ postId }) => {
-    const [comments, setComments] = useState([]);
-    const [comment, setComment] = useState({ com: "" });
+const Comments = ({ comments, onCreateComment, currentUser }) => {
+    const [newComment, setNewComment] = useState("");
 
-    useEffect(() => {
-        const storedComments = localStorage.getItem(`comments_${postId}`);
-
-        if (storedComments) {
-            setComments(JSON.parse(storedComments));
-        } else {
-            setComments([]);
-        }
-    }, [postId]);
-
-    const saveCommentsToLocalStorage = (updatedComments) => {
-        localStorage.setItem(
-            `comments_${postId}`,
-            JSON.stringify(updatedComments)
-        );
-    };
-
-    const createComment = (newComment) => {
-        const updatedComments = [...comments, newComment];
-
-        setComments(updatedComments);
-
-        saveCommentsToLocalStorage(updatedComments);
-    };
-
-    const handleSubmit = (e) => {
+    const handleCreateComment = (e) => {
         e.preventDefault();
 
-        createComment(comment);
+        if (newComment.trim()) {
+            onCreateComment({
+                content: newComment,
+                author: currentUser.username,
+            });
 
-        setComment({ com: "" });
+            setNewComment("");
+        }
     };
 
     return (
         <div>
-            <form>
+            <form onSubmit={handleCreateComment}>
                 <MyInput
-                    value={comment.com}
-                    onChange={(e) =>
-                        setComment({ ...comment, com: e.target.value })
-                    }
+                    value={newComment}
+                    onChange={(e) => setNewComment(e.target.value)}
                     type="text"
                     placeholder="Введите комментарий"
                 />
 
-                <MyButton onClick={handleSubmit}>Добавить комментарий</MyButton>
+                <MyButton type="submit">Добавить комментарий</MyButton>
             </form>
 
             <h1
@@ -67,8 +43,11 @@ const Comments = ({ postId }) => {
             </h1>
 
             <div className="post__comments">
-                {comments.map((item, index) => (
-                    <p key={index}>{item.com}</p>
+                {comments.map((comment) => (
+                    <div key={comment.id} className="comment">
+                        <strong>{comment.author}</strong>
+                        <p>{comment.content}</p>
+                    </div>
                 ))}
             </div>
         </div>

@@ -12,15 +12,17 @@ const Register = () => {
     const { setIsAuth } = useContext(AuthContext);
     const router = useNavigate();
 
-    const register = async (e) => {
+    const register = (e) => {
         e.preventDefault();
         if (userPassword !== userPasswordConfirm) {
             alert("Введенные пароли не совпадают!");
-
             setUserPasswordConfirm("");
-
             return;
         }
+        handleRegister(e);
+    };
+
+    const handleRegister = async (e) => {
         try {
             const response = await AuthService.register(
                 userEmail,
@@ -28,17 +30,13 @@ const Register = () => {
             );
 
             if (response.status === 200) {
-                setIsAuth(true);
-
-                router(`/posts`);
+                router("/login");
             } else {
                 setIsAuth(false);
-
                 alert("Такой пользователь уже зарегистрирован!");
             }
         } catch (error) {
             console.error(error);
-
             alert("Ошибка регистрации!");
         }
     };

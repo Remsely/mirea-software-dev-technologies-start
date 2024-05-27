@@ -1,8 +1,7 @@
 import React from "react";
-
 import PostItem from "./PostItem";
 
-const PostList = ({ posts, title, remove }) => {
+const PostList = ({ posts, title }) => {
     if (!posts.length) {
         return <h1 style={{ textAlign: "center" }}>Посты не найдены!</h1>;
     }
@@ -13,7 +12,6 @@ const PostList = ({ posts, title, remove }) => {
 
             {posts.map((post, index) => (
                 <PostItem
-                    remove={remove}
                     number={index + 1}
                     post={post}
                     key={post.id}

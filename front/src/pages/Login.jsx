@@ -20,7 +20,7 @@ const Login = () => {
             console.log(response.status);
 
             if (response.status === 200) {
-                if (response.data.accessToken === null) {
+                if (response.data.token === null) {
                     setIsAuth(false);
                     alert("Авторизация провалена!");
                 } else {

@@ -9,13 +9,13 @@ const register = (email, password) => {
             "Content-Type": "application/json",
         },
         data: {
-            email: email,
+            username: email,
             password: password,
         },
     };
 
     return axios.request(config).then((response) => {
-        if (response.data.accessToken) {
+        if (response.data.token) {
             localStorage.setItem("user", JSON.stringify(response.data));
         }
         return response;
@@ -31,7 +31,7 @@ const login = (email, password) => {
             "Content-Type": "application/json",
         },
         data: {
-            email: email,
+            username: email,
             password: password,
         },
     };
@@ -39,7 +39,7 @@ const login = (email, password) => {
     localStorage.removeItem("user");
 
     return axios.request(config).then((response) => {
-        if (response.data.accessToken) {
+        if (response.data.token) {
             localStorage.setItem("user", JSON.stringify(response.data));
         }
 
@@ -56,7 +56,7 @@ const getToken = () => {
 
     if (userJson) {
         const userObject = JSON.parse(userJson);
-        return userObject.accessToken || null;
+        return userObject.token || null;
     }
 
     return null;

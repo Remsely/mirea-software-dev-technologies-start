@@ -12,9 +12,14 @@ function App() {
     const [isAuth, setIsAuth] = useState(AuthService.getToken !== null);
 
     useEffect(() => {
-        if (isAuth) {
+        const token = AuthService.getToken();
+        if (token) {
+            axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+            setIsAuth(true);
+        } else {
+            setIsAuth(false);
         }
-    }, [isAuth]);
+    }, []);
 
     return (
         <AuthContext.Provider value={{ isAuth, setIsAuth }}>

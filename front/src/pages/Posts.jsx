@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect, useCallback } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import "../styles/App.css";
 import PostList from "../components/PostList";
 import PostForm from "../components/PostForm";
@@ -31,11 +31,11 @@ function Posts() {
         );
     }, [filter.query, sortedPosts]);
 
-    const createPost = useCallback((post) => {
-        setPosts((prevPosts) => [...prevPosts, post]);
-        
+    const createPost = (post) => {
+        setPosts([...posts, post]);
+
         setModal(false);
-    }, []);
+    };
 
     const [fetchPosts, isLoading, error] = useFetching(async () => {
         const gottenPosts = await PostService.getPosts();

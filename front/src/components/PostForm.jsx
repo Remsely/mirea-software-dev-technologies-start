@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import MyButton from "../UI/button/MyButton";
 import MyInput from "../UI/input/MyInput";
 import PostService from "../services/PostService";
 
 const PostForm = ({ create }) => {
     const [post, setPost] = useState({ image: null, title: "", content: "" });
+    const fileInputRef = useRef(null);
 
     const addNewPost = async (e) => {
         e.preventDefault();
@@ -16,23 +17,23 @@ const PostForm = ({ create }) => {
         };
         formData.append("json", JSON.stringify(jsonBody));
 
-        if (post.image) {
-            formData.append("image", post.image);
-        }
+        formData.append("image", post.image);
 
         const newPost = await PostService.addPost(formData);
 
-        const newPostI = { ...newPost };
-        create(newPostI);
+        create(newPost);
 
         setPost({ image: null, title: "", content: "" });
 
-        return newPostI;
+        fileInputRef.current.value = "";
+
+        return newPost;
     };
 
     return (
         <form>
             <input
+                ref={fileInputRef}
                 type="file"
                 onChange={(e) => setPost({ ...post, image: e.target.files[0] })}
             />

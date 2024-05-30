@@ -41,16 +41,14 @@ const getPostById = (id) => {
     });
 };
 
-const addPost = (formData) => {
-    axios
-        .post("/posts", formData, {
-            headers: {
-                "Content-Type": "multipart/form-data",
-            },
-        })
-        .then((r) => {
-            return r.data;
-        });
+const addPost = async (formData) => {
+    const r = await axios.post("/posts", formData, {
+        headers: {
+            "Content-Type": "multipart/form-data",
+        },
+    });
+
+    return r.data;
 };
 
 const PostService = {

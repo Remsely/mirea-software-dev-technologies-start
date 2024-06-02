@@ -46,6 +46,7 @@ const addPost = async (formData) => {
         headers: {
             "Content-Type": "multipart/form-data",
         },
+        Authorization: `Bearer ${AuthService.getToken()}`,
     });
 
     return r.data;

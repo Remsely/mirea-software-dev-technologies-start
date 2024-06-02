@@ -4,9 +4,12 @@ import PostService from "../services/PostService";
 
 const Like = ({ postId, userId }) => {
     const [like, setLike] = useState();
+    const [likes, setLikes] = useState(0);
 
     const fetchPost = async () => {
         const post = await PostService.getPostById(postId);
+
+        setLikes(post.likeCount);
 
         setLike(post.liked ? "red" : "white");
     };
@@ -17,9 +20,13 @@ const Like = ({ postId, userId }) => {
         if (like === "white") {
             await LikeService.addLike(postId, userId);
 
+            setLikes(likes - 1);
+
             setLike("red");
         } else {
             await LikeService.removeLike(postId, userId);
+
+            setLikes(likes + 1);
 
             setLike("white");
         }
@@ -30,9 +37,13 @@ const Like = ({ postId, userId }) => {
     };
 
     return (
-        <button className="like" onClick={toggleLike} style={buttonStyle}>
-            <img className="likeI" src="../images/heart1.png" alt="Like" />
-        </button>
+        <div className="like__info">
+            <button className="like" onClick={toggleLike} style={buttonStyle}>
+                <img className="likeI" src="../images/heart1.png" alt="Like" />
+            </button>
+
+            <p>{likes}</p>
+        </div>
     );
 };
 

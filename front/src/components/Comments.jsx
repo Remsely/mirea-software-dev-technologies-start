@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import MyInput from "../UI/input/MyInput";
 import MyButton from "../UI/button/MyButton";
 
-const Comments = ({ comments, onCreateComment, currentUser }) => {
+const Comments = ({ comments, onCreateComment }) => {
     const [newComment, setNewComment] = useState("");
 
     const handleCreateComment = (e) => {
@@ -11,7 +11,6 @@ const Comments = ({ comments, onCreateComment, currentUser }) => {
         if (newComment.trim()) {
             onCreateComment({
                 content: newComment,
-                author: currentUser.username,
             });
 
             setNewComment("");

@@ -10,6 +10,7 @@ import CommentService from "../services/CommentService";
 const PostItem = (props) => {
     const [modal, setModal] = useState(false);
     const [like, setLike] = useState();
+    const [likes, setLikes] = useState(0);
     const [post, setPost] = useState(props.post);
     const [currentUser, setCurrentUser] = useState(null);
     const [comments, setComments] = useState([]);
@@ -76,6 +77,8 @@ const PostItem = (props) => {
                     setLike={setLike}
                     postId={props.post.id}
                     currentUser={currentUser}
+                    likes={likes}
+                    setLikes={setLikes}
                 />
 
                 <MyButton

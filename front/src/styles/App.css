@@ -149,3 +149,8 @@ form {
         width: 150px;
     }
 }
+
+.like__info {
+    display: flex;
+    gap: 10px;
+}
